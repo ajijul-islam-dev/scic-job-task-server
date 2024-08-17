@@ -24,6 +24,11 @@ const client = new MongoClient(uri, {
   }
 });
 
+
+const db = client.db("procuct-searching");
+
+const productsCollection = db.collection("products");
+
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
@@ -41,7 +46,12 @@ async function run() {
     // bulk api for add products
     app.post("/products",async(req,res)=>{
       const products = await req.body;
-      
+      const result = await productsCollection.insertMany(products)
+      res.json({
+        message : "data inserted",
+        success : true,
+        data : result
+      })
     })
     
     // Send a ping to confirm a successful connection
@@ -49,7 +59,7 @@ async function run() {
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    // await client.close();
   }
 }
 run().catch(console.dir);

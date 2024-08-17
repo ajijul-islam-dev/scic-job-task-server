@@ -19,7 +19,7 @@ const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
-    strict: true,
+    strict: false,
     deprecationErrors: true,
   }
 });
@@ -53,6 +53,16 @@ async function run() {
         data : result
       })
     })
+
+    // get categories
+    app.get("/categories", async (req, res) => {
+      const result = await productsCollection.distinct("category");
+      res.json({
+        success: true, // Fixed typo from "duccess" to "success"
+        data: result
+      });
+    });
+    
     
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
